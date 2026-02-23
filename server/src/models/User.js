@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters long"],
       select: false, // Won't return password in queries by default
     },
-    fullname: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
@@ -81,15 +81,15 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hash password before saving
-userSchema.pre("save",async function(next) {
+userSchema.pre("save",async function() {
     // Only hash the password if it has been modified (or is new)
     if(!this.isModified("password")) {
-        return next();
+        return;
     }
     
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
+
 });
 
 // Compare entered password with hashed password
@@ -107,4 +107,4 @@ userSchema.methods.toJSON = function () {
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;
