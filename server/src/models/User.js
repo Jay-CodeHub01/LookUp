@@ -42,11 +42,28 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
     profilePicture: {
-      type: String,
-      default: "",
+      url:{
+        type: String,
+        default: "",
+      },
+      publicId: {
+        type: String,
+        default: "",
+      },
     },
     coverPicture: {
+      url: {
+        type: String,
+        default: "",
+      },
+      publicId: {
+        type: String,
+        default: "",
+      },
+    },
+    gender: {
       type: String,
+      enum: ["male", "female", "other", "prefer_not_to_say", ""],
       default: "",
     },
     followers: [
@@ -61,6 +78,14 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    followersCount: {
+      type: Number,
+      default: 0,
+    },
+    followingCount: {
+      type: Number,
+      default: 0,
+    },
     isPrivate: {
       type: Boolean,
       default: false,
@@ -68,6 +93,14 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    lastseen: {
+      type: Date,
+      default: Date.now,
     },
     role: {
       type: String,
@@ -79,6 +112,11 @@ const userSchema = new mongoose.Schema(
     timestamps: true, // add createdAt and updatedAt fields
   },
 );
+
+// -------- INDEXES FOR PERFORMANCE --------
+userSchema.index({ username: 1 });
+userSchema.index({ email: 1 });
+userSchema.index({ fullName: "text", username: "text" });
 
 // Hash password before saving
 userSchema.pre("save",async function() {
