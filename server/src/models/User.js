@@ -114,8 +114,6 @@ const userSchema = new mongoose.Schema(
 );
 
 // -------- INDEXES FOR PERFORMANCE --------
-userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
 userSchema.index({ fullName: "text", username: "text" });
 
 // Hash password before saving
@@ -141,6 +139,16 @@ userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
   return user;
+};
+
+// -------- VIRTUAL: IS FOLLOWING CHECK --------
+userSchema.methods.isFollowing = function (userId) {
+  return this.following.includes(userId);
+};
+
+// -------- VIRTUAL: IS FOLLOWED BY CHECK --------
+userSchema.methods.isFollowedBy = function (userId) {
+  return this.followers.includes(userId);
 };
 
 const User = mongoose.model("User", userSchema);

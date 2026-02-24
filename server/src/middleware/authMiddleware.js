@@ -1,54 +1,93 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-const protect = async (req, res, next) => {
+// Required authentication
+const protect = async (req, res, next) => { 
+  
   try {
     let token;
-
-    // Check for token in Authorization header
+    
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
     ) {
-      token = req.headers.authorization.split(" ")[1]; // Extract token from "Bearer <token>"
+      token = req.headers.authorization.split(" ")[1];
     }
-
+    
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized, no token provided",
+        message: "Not authorized. No token provided.",
       });
     }
-
-    // Verify token and get user from token
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // Attach user to request object, excluding password
-    const user = await User.findById(decoded.id).select("-password");
-
+    
+    const user = await User.findById(decoded.id);
+    
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "User not found",
+        message: "User belonging to this token no longer exists.",
       });
     }
-
+    
+    // Update last seen
+    user.lastSeen = new Date();
+    await user.save({ validateBeforeSave: false });
+    
     req.user = user;
     next();
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({
         success: false,
-        message: "Invalid token",
+        message: "Invalid token.",
       });
     }
-
-    console.error("Auth middleware error:", error);
+    
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Token expired. Please login again.",
+      });
+    }
+    
+    console.error("Auth Middleware Error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error.",
     });
+    console.log("hello")
+    
   }
 };
 
-export default protect;
+// Optional authentication (for routes that work with or without login)
+const optionalAuth = async (req, res, next) => {
+  try {
+    let token;
+    
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (user) {
+        req.user = user;
+      }
+    }
+    
+    next();
+  } catch (error) {
+    // If token is invalid, just continue without user
+    next();
+  }
+};
+
+export { protect, optionalAuth };

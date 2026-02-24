@@ -1,35 +1,41 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-import authRoutes from "./routes/auth.routes.js";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 // Load environment variables
 dotenv.config();
 
-// Initialize Express app
-const app = express();
-
-// MIDDLEWARE
-app.use(cors());
-app.use(express.json({limit: "10mb"}));
-app.use(express.urlencoded({ extended: true }));
-
-// Connect to MongoDB
+// Connect to database
 connectDB();
 
+// Initialize express
+const app = express();
 
-// ROUTES
+// -------- MIDDLEWARE --------
+app.use(cors());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
-// Check if the server is running
+// -------- ROUTES --------
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+// -------- HEALTH CHECK --------
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.json({
+    success: true,
+    message: "🔍 LookUp API is running!",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/api/auth",
+      users: "/api/users",
+    },
+  });
 });
 
-// Auth routes
-app.use("/api/auth", authRoutes);
-
-// 404 handler for undefined routes
+// -------- 404 HANDLER --------
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -37,19 +43,19 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler
-app.use((err, req, res) => {
-  console.error("Global error handler:", err);
+// -------- GLOBAL ERROR HANDLER --------
+app.use((err, req, res, next) => {
+  console.error("Global Error:", err.stack);
   res.status(500).json({
     success: false,
-    message: "Server error",
+    message: "Something went wrong!",
   });
 });
 
-
-// Start the server
+// -------- START SERVER --------
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`\n🔍 LookUp Server running on port ${PORT}`);
+  console.log(`📡 http://localhost:${PORT}\n`);
 });

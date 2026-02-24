@@ -1,6 +1,9 @@
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const multer = require("multer");
+import cloudinary from "cloudinary";
+import cloudinaryStorage from "multer-storage-cloudinary";
+import multer from "multer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Configure cloudinary
 cloudinary.config({
@@ -10,7 +13,7 @@ cloudinary.config({
 });
 
 // Profile picture storage
-const profilePictureStorage = new CloudinaryStorage({
+const profilePictureStorage = cloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "lookup/profile-pictures",
@@ -22,7 +25,7 @@ const profilePictureStorage = new CloudinaryStorage({
 });
 
 // Cover photo storage
-const coverPhotoStorage = new CloudinaryStorage({
+const coverPhotoStorage = cloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "lookup/cover-photos",
@@ -41,8 +44,4 @@ const uploadCoverPhoto = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
-module.exports = {
-  cloudinary,
-  uploadProfilePicture,
-  uploadCoverPhoto,
-};
+export { cloudinary, uploadProfilePicture, uploadCoverPhoto };

@@ -1,5 +1,4 @@
-const multer = require("multer");
-
+import multer from "multer";
 // Handle multer errors gracefully
 const handleUploadError = (uploadFn) => {
   return (req, res, next) => {
@@ -29,4 +28,4 @@ const handleUploadError = (uploadFn) => {
   };
 };
 
-module.exports = { handleUploadError };
+export { handleUploadError };
