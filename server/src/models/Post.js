@@ -6,7 +6,6 @@ const postSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
 
     // -------- CONTENT --------
@@ -91,7 +90,7 @@ postSchema.index({ hashtags: 1 });
 postSchema.index({ isDeleted: 1 });
 
 // -------- EXTRACT HASHTAGS BEFORE SAVE --------
-postSchema.pre("save", function (next) {
+postSchema.pre("save", async function() {
   if (this.isModified("caption")) {
     const hashtagRegex = /#(\w+)/g;
     const matches = this.caption.match(hashtagRegex);
@@ -99,7 +98,7 @@ postSchema.pre("save", function (next) {
       ? [...new Set(matches.map((tag) => tag.slice(1).toLowerCase()))]
       : [];
   }
-  next();
+  // next();
 });
 
 // -------- HELPER: Check if user liked --------
@@ -108,12 +107,12 @@ postSchema.methods.isLikedBy = function (userId) {
 };
 
 // -------- EXCLUDE DELETED POSTS BY DEFAULT --------
-postSchema.pre(/^find/, function (next) {
+postSchema.pre(/^find/, async function() {
   // Only apply if not explicitly querying for deleted posts
   if (!this.getQuery().isDeleted) {
     this.where({ isDeleted: false });
   }
-  next();
+  // next();
 });
 
 const Post = mongoose.model("Post", postSchema);

@@ -32,7 +32,7 @@ export const createPost = async (req, res) => {
         });
       }
     }
-
+    
     // Extract mentions from caption (@username)
     let mentionedUserIds = [];
     if (caption) {
@@ -47,7 +47,7 @@ export const createPost = async (req, res) => {
         mentionedUserIds = mentionedUsers.map((u) => u._id);
       }
     }
-
+    
     const post = await Post.create({
       author: req.user._id,
       caption: caption || "",
@@ -55,7 +55,7 @@ export const createPost = async (req, res) => {
       location: location || "",
       mentions: mentionedUserIds,
     });
-
+    
     // Populate author info for response
     await post.populate("author", "username fullName profilePicture isVerified");
     await post.populate("mentions", "username fullName");

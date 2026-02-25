@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -22,6 +23,8 @@ app.use(express.urlencoded({ extended: true }));
 // -------- ROUTES --------
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+
 // -------- HEALTH CHECK --------
 app.get("/", (req, res) => {
   res.json({
@@ -31,17 +34,18 @@ app.get("/", (req, res) => {
     endpoints: {
       auth: "/api/auth",
       users: "/api/users",
+      posts: "/api/posts",
     },
   });
 });
 
 // -------- 404 HANDLER --------
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
-});
+// app.use("*", (req, res) => {
+//   res.status(404).json({
+//     success: false,
+//     message: "Route not found",
+//   });
+// });
 
 // -------- GLOBAL ERROR HANDLER --------
 app.use((err, req, res, next) => {

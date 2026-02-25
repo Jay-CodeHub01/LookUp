@@ -44,4 +44,16 @@ const uploadCoverPhoto = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
 });
 
-export { cloudinary, uploadProfilePicture, uploadCoverPhoto };
+const uploadPostImages = multer({
+  storage: cloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: "lookup/post-images",
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+      transformation: [{ width: 1200, height: 1200, crop: "limit" }],
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit per image
+});
+
+export { cloudinary, uploadProfilePicture, uploadCoverPhoto, uploadPostImages };
