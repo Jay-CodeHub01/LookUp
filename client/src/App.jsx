@@ -15,6 +15,7 @@ import ExplorePage from './pages/ExplorePage';
 import ProfilePage from './pages/ProfilePage';
 import SearchPage from './pages/SearchPage';
 import HashtagPage from './pages/HashtagPage';
+import NotificationsPage from './pages/NotificationsPage';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -70,6 +71,14 @@ function AnimatedRoutes() {
           element={
             <ProtectedRoute>
               <HashtagPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
             </ProtectedRoute>
           }
         />
