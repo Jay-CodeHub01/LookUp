@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       const { data } = await getMe();
-      setUser(data.user);
+      setUser(data.data.user);
       setIsAuthenticated(true);
     } catch (error) {
       localStorage.removeItem('token');

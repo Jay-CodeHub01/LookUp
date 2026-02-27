@@ -98,7 +98,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    lastseen: {
+    lastSeen: {
       type: Date,
       default: Date.now,
     },

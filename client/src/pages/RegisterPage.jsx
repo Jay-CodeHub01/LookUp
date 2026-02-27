@@ -47,7 +47,7 @@ const RegisterPage = () => {
         email: formData.email,
         password: formData.password,
       });
-      login(data.token, data.user);
+      login(data.data.token, data.data.user);
       toast.success('Account created successfully!');
       navigate('/');
     } catch (error) {

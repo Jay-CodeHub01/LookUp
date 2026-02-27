@@ -112,8 +112,8 @@ const updateProfile = async (req, res) => {
     });
 
     // Handle username change
-    if (request.body.username) {
-      const newUsername = username.toLowerCase().trim();
+    if (req.body.username) {
+      const newUsername = req.body.username.toLowerCase().trim();
 
       // Check if username is taken
       const existingUser = await User.findOne({
@@ -220,12 +220,12 @@ const updateCoverPhoto = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     // Delete old cover photo from cloudinary
-    if (user.coverPhoto.publicId) {
-      await cloudinary.uploader.destroy(user.coverPhoto.publicId);
+    if (user.coverPicture.publicId) {
+      await cloudinary.uploader.destroy(user.coverPicture.publicId);
     }
 
     // Update with new image
-    user.coverPhoto = {
+    user.coverPicture = {
       url: req.file.path,
       publicId: req.file.filename,
     };
@@ -236,7 +236,7 @@ const updateCoverPhoto = async (req, res) => {
       success: true,
       message: "Cover photo updated successfully",
       data: {
-        coverPhoto: user.coverPhoto,
+        coverPicture: user.coverPicture,
       },
     });
   } catch (error) {

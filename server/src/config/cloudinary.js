@@ -1,5 +1,5 @@
-import cloudinary from "cloudinary";
-import cloudinaryStorage from "multer-storage-cloudinary";
+import { v2 as cloudinary } from "cloudinary";
+import CloudinaryStorage from "multer-storage-cloudinary";
 import multer from "multer";
 import dotenv from "dotenv";
 
@@ -13,7 +13,7 @@ cloudinary.config({
 });
 
 // Profile picture storage
-const profilePictureStorage = cloudinaryStorage({
+const profilePictureStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "lookup/profile-pictures",
@@ -25,7 +25,7 @@ const profilePictureStorage = cloudinaryStorage({
 });
 
 // Cover photo storage
-const coverPhotoStorage = cloudinaryStorage({
+const coverPhotoStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "lookup/cover-photos",
@@ -45,7 +45,7 @@ const uploadCoverPhoto = multer({
 });
 
 const uploadPostImages = multer({
-  storage: cloudinaryStorage({
+  storage: new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
       folder: "lookup/post-images",

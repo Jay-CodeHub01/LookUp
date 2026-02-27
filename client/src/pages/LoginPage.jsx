@@ -27,7 +27,7 @@ const LoginPage = () => {
 
     try {
       const { data } = await loginUser(formData);
-      login(data.token, data.user);
+      login(data.data.token, data.data.user);
       toast.success('Welcome back!');
       navigate('/');
     } catch (error) {
