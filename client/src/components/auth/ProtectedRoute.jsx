@@ -1,6 +1,7 @@
 // src/components/auth/ProtectedRoute.jsx
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
@@ -9,8 +10,21 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#030712' }}>
+        <div className="text-center">
+          <motion.h1
+            className="text-3xl font-bold gradient-text mb-4"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            LookUp
+          </motion.h1>
+          <motion.div
+            className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full mx-auto"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          />
+        </div>
       </div>
     );
   }
